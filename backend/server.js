@@ -53,9 +53,10 @@ app.post("/api/register", (req, res) => {
 });
 
 // Serve index.html for all other routes (frontend routing)
-app.get("/*", (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
 
 // Start server
 app.listen(PORT, () => {
