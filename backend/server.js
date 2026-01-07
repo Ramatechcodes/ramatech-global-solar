@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -7,58 +6,88 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS and JSON parsing
+/* ===================== MIDDLEWARE ===================== */
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend
+// Serve static frontend files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Path to data storage file
+/* ===================== DATA STORAGE ===================== */
 const DATA_FILE = path.join(__dirname, "data.json");
 
-// Read data from JSON file
+// Ensure data.json exists
+if (!fs.existsSync(DATA_FILE)) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+}
+
+// Read data
 function readData() {
   try {
     return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  } catch {
+  } catch (err) {
+    console.error("Read error:", err);
     return [];
   }
 }
 
-// Write data to JSON file
+// Write data
 function writeData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf8");
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// API route to handle registration
+/* ===================== API ROUTES ===================== */
+
+// Register customer
 app.post("/api/register", (req, res) => {
   try {
     const data = readData();
-    const newEntry = req.body;
-
-    // Check for duplicate IDs
-    if (data.some(e => e.id === newEntry.id)) {
-      return res.status(400).json({ message: "Duplicate ID detected." });
-    }
+    const newEntry = {
+      ...req.body,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString()
+    };
 
     data.unshift(newEntry);
     writeData(data);
 
-    res.status(201).json({ message: "Registration saved successfully!", entry: newEntry });
+    res.status(201).json({
+      message: "Registration saved successfully",
+      entry: newEntry
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to save registration." });
+    res.status(500).json({ message: "Failed to save registration" });
   }
 });
 
-// Serve index.html for all other routes (frontend routing)
-app.get(/.*/, (req, res) => {
+// Get all registrations (ADMIN)
+app.get("/api/registrations", (req, res) => {
+  try {
+    const data = readData();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to load registrations" });
+  }
+});
+
+/* ===================== ADMIN PAGE ===================== */
+
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
+});
+
+/* ===================== FRONTEND ROUTING ===================== */
+/*
+⚠️ THIS MUST BE LAST
+This prevents Render crash and allows SPA routing
+*/
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+/* ===================== START SERVER ===================== */
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
