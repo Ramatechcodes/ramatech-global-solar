@@ -20,7 +20,18 @@ textarea {resize:none;}
 .package-card:hover {border-color:#198754; background:#e9f7ef;}
 .summary {margin-top:25px; padding:20px; background:#e9f7ef; border-radius:8px;}
 button { background:#198754; color:#fff; border:none; padding:14px 25px; font-size:16px; border-radius:8px; cursor:pointer; margin-top:20px;}
-footer { text-align:center; padding:15px; font-size:14px; color:#666;}
+footer { text-align:center; padding:15px; font-size:14px; color:#666; }
+
+/* Mobile responsiveness */
+@media only screen and (max-width:768px){
+  .grid { grid-template-columns:1fr; }
+  .package-card { display:block; width:100%; margin-bottom:10px; }
+  .container { padding:20px; margin:15px; }
+  header h1 { font-size:20px; }
+  header p { font-size:14px; }
+  .summary ul li { font-size:13px; }
+  button { width:100%; padding:12px; font-size:14px; }
+}
 </style>
 </head>
 <body>
@@ -38,7 +49,15 @@ footer { text-align:center; padding:15px; font-size:14px; color:#666;}
   <div><label>Full Name</label><input type="text" name="fullName" required /></div>
   <div><label>Phone Number</label><input type="tel" name="phoneNumber" required /></div>
   <div><label>Email Address</label><input type="email" name="email" /></div>
+  <div><label>Nationality</label><input type="text" name="nationality" /></div>
+  <div><label>State</label><input type="text" name="state" /></div>
+  <div><label>LGA</label><input type="text" name="lga" /></div>
+  <div><label>Postal Code</label><input type="text" name="postalCode" /></div>
+  <div><label>Nearest Bus Stop / Landmark</label><input type="text" name="busStop" /></div>
 </div>
+
+<label style="margin-top:15px">Full Address</label>
+<textarea rows="3" name="address"></textarea>
 
 <label style="margin-top:15px">Type of Installation</label>
 <select name="installationType" id="installType" onchange="togglePackages()" required>
@@ -108,11 +127,7 @@ function updateSummary() {
   const formData = new FormData(orderForm);
   const solarPackage = formData.get("solarPackage");
 
-  let total = 0;
-  let outreachPrice = 0;
-  let upfront = 0;
-  let balance = 0;
-  let weekly = 0;
+  let total = 0, outreachPrice = 0, upfront = 0, balance = 0, weekly = 0;
 
   if (installType.value === "solar" && solarPackage && solarPrices[solarPackage]) {
     total = solarPrices[solarPackage];

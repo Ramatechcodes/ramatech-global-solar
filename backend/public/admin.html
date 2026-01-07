@@ -6,21 +6,34 @@
 <title>Admin Dashboard - Ramatech</title>
 <style>
 body { font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; }
-h1 { color:#198754; }
+h1 { color:#198754; margin-bottom:20px;}
 table { width:100%; border-collapse:collapse; background:#fff;}
 th, td { padding:10px; border:1px solid #ddd; font-size:14px;}
-th { background:#198754; color:#fff; }
+th { background:#198754; color:#fff; text-align:left;}
 tr:nth-child(even){ background:#f9f9f9; }
+
+/* Mobile responsiveness */
+@media only screen and (max-width:768px){
+  table { display:block; overflow-x:auto; white-space:nowrap; }
+  th, td { font-size:13px; }
+}
 </style>
 </head>
 <body>
+
 <h1>📋 Registered Customers</h1>
+
 <table id="dataTable">
   <thead>
     <tr>
       <th>Full Name</th>
       <th>Phone</th>
       <th>Email</th>
+      <th>Nationality</th>
+      <th>State</th>
+      <th>LGA</th>
+      <th>Postal Code</th>
+      <th>Address / Landmark</th>
       <th>Installation</th>
       <th>Total (₦)</th>
       <th>Upfront (₦)</th>
@@ -45,6 +58,11 @@ async function loadData() {
         <td>${item.fullName || "-"}</td>
         <td>${item.phoneNumber || "-"}</td>
         <td>${item.email || "-"}</td>
+        <td>${item.nationality || "-"}</td>
+        <td>${item.state || "-"}</td>
+        <td>${item.lga || "-"}</td>
+        <td>${item.postalCode || "-"}</td>
+        <td>${item.address || "-"}${item.busStop ? ' (Near: ' + item.busStop + ')' : ''}</td>
         <td>${item.installationType || "-"} ${item.installationSpec ? '(' + item.installationSpec + ')' : ''}</td>
         <td>${item.payment?.total?.toLocaleString() || "-"}</td>
         <td>${item.payment?.upfront?.toLocaleString() || "-"}</td>
@@ -61,5 +79,6 @@ async function loadData() {
 
 loadData();
 </script>
+
 </body>
 </html>
