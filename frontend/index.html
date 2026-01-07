@@ -264,13 +264,20 @@ orderForm.addEventListener("submit", async (e) => {
 
   try {
     // 1️⃣ Send to backend
-    const res = await fetch("http://localhost:5000/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.message);
+   const res = await fetch(
+  "https://ramatech-global-solar-nig-ltd.onrender.com/api/register",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  }
+);
+
+const result = await res.json();
+
+if (!res.ok) throw new Error(result.message);
 
     // 2️⃣ Wait for OK
     alert("✅ Registration successful!");
