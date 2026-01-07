@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -6,15 +7,17 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Enable CORS and JSON parsing
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend
+// Serve static frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// Data file
+// Path to data storage file
 const DATA_FILE = path.join(__dirname, "data.json");
 
+// Read data from JSON file
 function readData() {
   try {
     return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
@@ -23,20 +26,25 @@ function readData() {
   }
 }
 
+// Write data to JSON file
 function writeData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf8");
 }
 
-// API route
+// API route to handle registration
 app.post("/api/register", (req, res) => {
   try {
     const data = readData();
     const newEntry = req.body;
-    if (data.some(e => e.id === newEntry.id))
+
+    // Check for duplicate IDs
+    if (data.some(e => e.id === newEntry.id)) {
       return res.status(400).json({ message: "Duplicate ID detected." });
+    }
 
     data.unshift(newEntry);
     writeData(data);
+
     res.status(201).json({ message: "Registration saved successfully!", entry: newEntry });
   } catch (err) {
     console.error(err);
@@ -44,9 +52,12 @@ app.post("/api/register", (req, res) => {
   }
 });
 
-// Serve frontend for all other routes
-app.get("*", (req, res) => {
+// Serve index.html for all other routes (frontend routing)
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
