@@ -6,7 +6,9 @@ const db = require("./db");
 //nst { sendWhatsAppMessage } = require("./whatsapp");//
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
 app.use(express.json());
 
 // ===== Test Route =====
