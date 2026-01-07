@@ -186,8 +186,9 @@
     <div class="summary">
       <h3>Payment Structure</h3>
       <ul>
-        <li>40% Initial Payment</li>
-        <li>60% Weekly Installment (16 weeks)</li>
+        <li>Total Amount: <span id="totalAmount">-</span></li>
+        <li>Balance (60%): <span id="balance">-</span></li>
+        <li>Weekly Payment (16 weeks): <span id="weeklyPayment">-</span></li>
       </ul>
     </div>
 
@@ -200,36 +201,105 @@
 </footer>
 
 <script>
-  function togglePackages() {
-    document.getElementById("solarPackages")
-      .classList.toggle("hidden", installType.value !== "solar");
+const installType = document.getElementById("installType");
+const solarPackagesDiv = document.getElementById("solarPackages");
+const totalAmountEl = document.getElementById("totalAmount");
+const balanceEl = document.getElementById("balance");
+const weeklyPaymentEl = document.getElementById("weeklyPayment");
+const orderForm = document.getElementById("orderForm");
+const submitBtn = orderForm.querySelector("button[type='submit']");
+
+// Your WhatsApp number (with country code, no spaces or symbols except +)
+const myWhatsAppNumber = "+2349034689656";
+
+// Solar package prices
+const solarPrices = {
+  "1kva_sachet": 600000,
+  "1kva_transformer": 950000,
+  "2.5kva_hybrid": 1600000,
+  "3.5kva_hybrid": 1900000,
+  "5kva_hybrid": 3500000,
+  "7.5kva_hybrid": 5800000,
+  "10kva_hybrid": 7800000,
+};
+
+// Show/hide solar packages
+function togglePackages() {
+  solarPackagesDiv.classList.toggle("hidden", installType.value !== "solar");
+  updateSummary();
+}
+
+// Update payment summary
+function updateSummary() {
+  const formData = new FormData(orderForm);
+  const solarPackage = formData.get("solarPackage");
+  let total = 0;
+
+  if (installType.value === "solar" && solarPackage && solarPrices[solarPackage]) {
+    total = solarPrices[solarPackage];
   }
 
-  document.getElementById("orderForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const balance = Math.round(total * 0.6);
+  const weeklyPayment = Math.round(balance / 16);
 
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
+  totalAmountEl.innerText = total ? `₦${total.toLocaleString()}` : "-";
+  balanceEl.innerText = balance ? `₦${balance.toLocaleString()}` : "-";
+  weeklyPaymentEl.innerText = weeklyPayment ? `₦${weeklyPayment.toLocaleString()}` : "-";
+}
 
-    try {
-      const res = await fetch("http://localhost:5000/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+// Event listeners for package selection
+document.querySelectorAll('input[name="solarPackage"]').forEach(radio => {
+  radio.addEventListener("change", updateSummary);
+});
 
-      const result = await res.json();
+// Form submission
+orderForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      if (!res.ok) throw new Error(result.message);
+  const formData = new FormData(orderForm);
+  const data = Object.fromEntries(formData.entries());
 
-      alert("✅ Registration successful!");
-      e.target.reset();
-      document.getElementById("solarPackages").classList.add("hidden");
-    } catch (err) {
-      alert("❌ " + err.message);
-    }
-  });
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  try {
+    // 1️⃣ Send to backend
+    const res = await fetch("http://localhost:5000/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message);
+
+    // 2️⃣ Wait for OK
+    alert("✅ Registration successful!");
+
+    // 3️⃣ Send WhatsApp message via wa.me (no API needed)
+    const message = `
+Hello ${data.fullName}!
+Your registration is confirmed.
+Total: ₦${data.solarPackage ? solarPrices[data.solarPackage].toLocaleString() : "-"}
+Balance: ₦${data.solarPackage ? Math.round(solarPrices[data.solarPackage] * 0.6).toLocaleString() : "-"}
+Weekly Payment: ₦${data.solarPackage ? Math.round((solarPrices[data.solarPackage] * 0.6)/16).toLocaleString() : "-"}
+`;
+
+    const url = `https://wa.me/${myWhatsAppNumber.replace(/\+/g,"")}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank"); // opens WhatsApp Web with prefilled message
+
+    // 4️⃣ Reset form for next registration
+    orderForm.reset();
+    solarPackagesDiv.classList.add("hidden");
+    updateSummary();
+
+  } catch (err) {
+    alert("❌ " + err.message);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Application";
+  }
+});
+
+// Initialize summary on load
+updateSummary();
 </script>
-
-</body>
-</html>

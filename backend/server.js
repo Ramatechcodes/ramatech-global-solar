@@ -1,83 +1,37 @@
 // server.js
 require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+const db = require("./db");
+//nst { sendWhatsAppMessage } = require("./whatsapp");//
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ================= MONGODB CONNECTION (RAILWAY) =================
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("✅ Railway MongoDB Connected"))
-  .catch((err) => {
-    console.error("❌ MongoDB Connection Error:", err.message);
-    process.exit(1);
-  });
+// ===== Test Route =====
+app.get("/", (req, res) => res.send("✅ EasyBuy backend running"));
 
-// ================= CUSTOMER SCHEMA =================
-const customerSchema = new mongoose.Schema({
-  // Personal Info
-  fullName: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  email: { type: String },
-
-  dob: String,
-  nationality: String,
-
-  // Address Info
-  address: String,
-  state: String,
-  lga: String,
-  postalCode: String,
-  busStop: String,
-
-  // Installation Info
-  installationType: { type: String, required: true }, // solar or cctv
-  solarPackage: String,
-
-  // Payment Info
-  totalAmount: Number,
-  balance: Number,
-  weeks: { type: Number, default: 16 },
-  weeklyPayment: Number,
-
-  createdAt: { type: Date, default: Date.now },
-});
-
-const Customer = mongoose.model("Customer", customerSchema);
-
-// ================= ADMIN LOGIN =================
-const ADMIN = {
-  username: "admin",
-  password: "admin123", // change later
-};
-
+// ===== Admin Login =====
+const ADMIN = { username: "admin", password: "admin123" };
 app.post("/api/admin/login", (req, res) => {
   const { username, password } = req.body;
-
   if (username === ADMIN.username && password === ADMIN.password) {
     return res.json({ message: "Login successful" });
   }
-
   res.status(401).json({ message: "Invalid login details" });
 });
 
-// ================= REGISTER CUSTOMER =================
+// ===== Register Customer =====
 app.post("/api/register", async (req, res) => {
   try {
     const data = req.body;
-
     if (!data.fullName || !data.phoneNumber || !data.installationType) {
-      return res.status(400).json({
-        message: "Full name, phone number and installation type are required",
-      });
+      return res.status(400).json({ message: "Full name, phone number and installation type are required" });
     }
 
+    // Solar pricing
     let totalAmount = 0;
-
     if (data.installationType === "solar") {
       const packages = {
         "1kva_sachet": 600000,
@@ -88,43 +42,64 @@ app.post("/api/register", async (req, res) => {
         "7.5kva_hybrid": 5800000,
         "10kva_hybrid": 7800000,
       };
-
       totalAmount = packages[data.solarPackage] || 0;
     }
 
-    const balance = totalAmount * 0.6;
-    const weeklyPayment = balance / 16;
+    const balance = Math.round(totalAmount * 0.6);
+    const weeks = 16;
+    const weeklyPayment = Math.round(balance / weeks);
 
-    const customer = await Customer.create({
+    await db.read();
+    const newCustomer = {
+      id: Date.now(),
       ...data,
       totalAmount,
       balance,
-      weeks: 16,
+      weeks,
       weeklyPayment,
-    });
+      createdAt: new Date().toISOString(),
+    };
 
-    res.json({
-      message: "Customer registered successfully",
-      customer,
-    });
+    db.data.customers.push(newCustomer);
+    await db.write();
+
+    // WhatsApp Message
+    const msg = `
+Hello ${newCustomer.fullName}!
+Thank you for registering with EasyBuy.
+
+Phone: ${newCustomer.phoneNumber}
+Email: ${newCustomer.email || "-"}
+Installation: ${newCustomer.installationType}
+${newCustomer.installationType === "solar" ? `Package: ${newCustomer.solarPackage}` : ""}
+Total Amount: ₦${newCustomer.totalAmount.toLocaleString()}
+Balance: ₦${newCustomer.balance.toLocaleString()}
+Weekly Payment: ₦${newCustomer.weeklyPayment.toLocaleString()}
+`;
+
+   //endWhatsAppMessage(newCustomer.phoneNumber, msg);//
+
+    res.json({ message: "✅ Customer registered successfully", customer: newCustomer });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// ================= GET ALL CUSTOMERS =================
+// ===== Get all customers =====
 app.get("/api/customers", async (req, res) => {
   try {
-    const customers = await Customer.find().sort({ createdAt: -1 });
+    await db.read();
+    const customers = db.data.customers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.json(customers);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// ================= SERVER =================
-const PORT = process.env.PORT || 5000;
+// ===== Start Server =====
+const PORT = 5000; // force 5000 for now
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
