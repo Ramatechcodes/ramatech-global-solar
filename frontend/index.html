@@ -182,15 +182,21 @@
         <input type="radio" name="solarPackage" value="10kva_hybrid"> 10kVA Hybrid – ₦7.8M
       </label>
     </div>
+    
 
-    <div class="summary">
-      <h3>Payment Structure</h3>
-      <ul>
-        <li>Total Amount: <span id="totalAmount">-</span></li>
-        <li>Balance (60%): <span id="balance">-</span></li>
-        <li>Weekly Payment (16 weeks): <span id="weeklyPayment">-</span></li>
-      </ul>
-    </div>
+   <div class="summary">
+  <h3>Payment Structure</h3>
+  <ul>
+    <li>Total Amount: <span id="totalAmount">-</span></li>
+    <li>Outreach Payment (₦100,000 deduction): <span id="outreachPayment">-</span></li>
+    <li>Adjusted Total: <span id="adjustedTotal">-</span></li>
+    <li>Upfront (40%): <span id="upfrontPayment">-</span></li>
+    <li>Balance (60%): <span id="balance">-</span></li>
+    <li>Weekly Payment (16 weeks): <span id="weeklyPayment">-</span></li>
+  </ul>
+</div>
+
+
 
     <button type="submit">Submit Application</button>
   </form>
@@ -203,14 +209,16 @@
 <script>
 const installType = document.getElementById("installType");
 const solarPackagesDiv = document.getElementById("solarPackages");
+
 const totalAmountEl = document.getElementById("totalAmount");
+const outreachEl = document.getElementById("outreachPayment");
+const adjustedTotalEl = document.getElementById("adjustedTotal");
+const upfrontEl = document.getElementById("upfrontPayment");
 const balanceEl = document.getElementById("balance");
 const weeklyPaymentEl = document.getElementById("weeklyPayment");
+
 const orderForm = document.getElementById("orderForm");
 const submitBtn = orderForm.querySelector("button[type='submit']");
-
-// Your WhatsApp number (with country code, no spaces or symbols except +)
-const myWhatsAppNumber = "+2349034689656";
 
 // Solar package prices
 const solarPrices = {
@@ -223,6 +231,9 @@ const solarPrices = {
   "10kva_hybrid": 7800000,
 };
 
+// Outreach deduction
+const OUTREACH_DEDUCTION = 100000;
+
 // Show/hide solar packages
 function togglePackages() {
   solarPackagesDiv.classList.toggle("hidden", installType.value !== "solar");
@@ -233,24 +244,39 @@ function togglePackages() {
 function updateSummary() {
   const formData = new FormData(orderForm);
   const solarPackage = formData.get("solarPackage");
+
   let total = 0;
+  let outreachPrice = 0;
+  let upfront = 0;
+  let balance = 0;
+  let weekly = 0;
 
   if (installType.value === "solar" && solarPackage && solarPrices[solarPackage]) {
     total = solarPrices[solarPackage];
+    outreachPrice = total - OUTREACH_DEDUCTION; // final loan price after discount
+    upfront = Math.round(outreachPrice * 0.4);
+    balance = Math.round(outreachPrice * 0.6);
+    weekly = Math.round(balance / 16);
   }
 
-  const balance = Math.round(total * 0.6);
-  const weeklyPayment = Math.round(balance / 16);
-
+  // Update the DOM
   totalAmountEl.innerText = total ? `₦${total.toLocaleString()}` : "-";
+  outreachEl.innerText = outreachPrice ? `₦${outreachPrice.toLocaleString()}` : "-";
+  adjustedTotalEl.innerText = outreachPrice ? `₦${outreachPrice.toLocaleString()}` : "-";
+  upfrontEl.innerText = upfront ? `₦${upfront.toLocaleString()}` : "-";
   balanceEl.innerText = balance ? `₦${balance.toLocaleString()}` : "-";
-  weeklyPaymentEl.innerText = weeklyPayment ? `₦${weeklyPayment.toLocaleString()}` : "-";
+  weeklyPaymentEl.innerText = weekly ? `₦${weekly.toLocaleString()}` : "-";
 }
 
 // Event listeners for package selection
 document.querySelectorAll('input[name="solarPackage"]').forEach(radio => {
   radio.addEventListener("change", updateSummary);
 });
+
+// Generate unique ID
+function generateUniqueId() {
+  return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
+}
 
 // Form submission
 orderForm.addEventListener("submit", async (e) => {
@@ -259,42 +285,39 @@ orderForm.addEventListener("submit", async (e) => {
   const formData = new FormData(orderForm);
   const data = Object.fromEntries(formData.entries());
 
+  data.id = generateUniqueId();
+  data.createdAt = new Date().toISOString();
+
+  // Payment calculation
+  const solarPackage = data.solarPackage;
+  const total = solarPackage && solarPrices[solarPackage] ? solarPrices[solarPackage] : 0;
+  const outreachPrice = total ? total - OUTREACH_DEDUCTION : 0;
+  const upfront = Math.round(outreachPrice * 0.4);
+  const balance = Math.round(outreachPrice * 0.6);
+  const weekly = Math.round(balance / 16);
+
+  data.payment = {
+    total,
+    outreachPrice,
+    upfront,
+    balance,
+    weekly
+  };
+
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
   try {
-    // 1️⃣ Send to backend
-   const res = await fetch(
-  "https://ramatech-global-solar-nig-ltd.onrender.com/api/register",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  }
-);
+    const res = await fetch("http://localhost:5000/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
 
-const result = await res.json();
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message);
 
-if (!res.ok) throw new Error(result.message);
-
-    // 2️⃣ Wait for OK
-    alert("✅ Registration successful!");
-
-    // 3️⃣ Send WhatsApp message via wa.me (no API needed)
-    const message = `
-Hello ${data.fullName}!
-Your registration is confirmed.
-Total: ₦${data.solarPackage ? solarPrices[data.solarPackage].toLocaleString() : "-"}
-Balance: ₦${data.solarPackage ? Math.round(solarPrices[data.solarPackage] * 0.6).toLocaleString() : "-"}
-Weekly Payment: ₦${data.solarPackage ? Math.round((solarPrices[data.solarPackage] * 0.6)/16).toLocaleString() : "-"}
-`;
-
-    const url = `https://wa.me/${myWhatsAppNumber.replace(/\+/g,"")}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank"); // opens WhatsApp Web with prefilled message
-
-    // 4️⃣ Reset form for next registration
+    alert("✅ Registration saved successfully!");
     orderForm.reset();
     solarPackagesDiv.classList.add("hidden");
     updateSummary();
@@ -310,3 +333,5 @@ Weekly Payment: ₦${data.solarPackage ? Math.round((solarPrices[data.solarPacka
 // Initialize summary on load
 updateSummary();
 </script>
+
+

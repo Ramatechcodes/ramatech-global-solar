@@ -1,0 +1,61 @@
+[
+  {
+    "fullName": "ramadan",
+    "phoneNumber": "09034689656",
+    "email": "ramadanayinla93@gmail.com",
+    "dob": "1999-12-12",
+    "nationality": "nigerian",
+    "state": "lagos",
+    "lga": "lekki",
+    "postalCode": "1121002",
+    "busStop": "lekki",
+    "address": "ikeja",
+    "installationType": "solar",
+    "solarPackage": "10kva_hybrid",
+    "id": "1767809195176597",
+    "createdAt": "2026-01-07T18:06:35.176Z",
+    "payment": {
+      "total": 7800000,
+      "outreachPrice": 7700000,
+      "upfront": 3080000,
+      "balance": 4620000,
+      "weekly": 288750
+    }
+  },
+  {
+    "fullName": "ramadan",
+    "phoneNumber": "09034689656",
+    "email": "ramadanayinla93@gmail.com",
+    "dob": "1999-12-12",
+    "nationality": "nigerian",
+    "state": "lagos",
+    "lga": "lekki",
+    "postalCode": "1121002",
+    "busStop": "lekki",
+    "address": "ikeja",
+    "installationType": "solar",
+    "solarPackage": "3.5kva_hybrid",
+    "id": "1767808730284222",
+    "createdAt": "2026-01-07T17:58:50.284Z",
+    "payment": {
+      "total": 1900000,
+      "outreachPrice": 1800000
+    }
+  },
+  {
+    "fullName": "ramadan",
+    "phoneNumber": "09034689656",
+    "email": "ramadanayinla93@gmail.com",
+    "dob": "1999-12-12",
+    "nationality": "nigerian",
+    "state": "lagos",
+    "lga": "lekki",
+    "postalCode": "1121002",
+    "busStop": "lekki",
+    "address": "ikeja",
+    "installationType": "solar",
+    "solarPackage": "1kva_transformer",
+    "id": "1767807908011451",
+    "createdAt": "2026-01-07T17:45:08.011Z"
+  }
+]
