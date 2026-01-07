@@ -1,87 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ramatech Global Solar & CCTV Nig. Ltd.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: linear-gradient(135deg, #0f5132, #198754);
-      color: #fff;
-      padding: 25px;
-      text-align: center;
-    }
-    .container {
-      max-width: 1100px;
-      margin: 30px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-    h2 { margin-top: 0; color: #0f5132; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-    }
-    label { font-size: 14px; font-weight: 500; }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    textarea { resize: none; }
-    .hidden { display: none; }
-    .packages {
-      margin-top: 20px;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 8px;
-    }
-    .package-card {
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      cursor: pointer;
-    }
-    .package-card:hover {
-      border-color: #198754;
-      background: #e9f7ef;
-    }
-    .summary {
-      margin-top: 25px;
-      padding: 20px;
-      background: #e9f7ef;
-      border-radius: 8px;
-    }
-    button {
-      background: #198754;
-      color: #fff;
-      border: none;
-      padding: 14px 25px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 14px;
-      color: #666;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ramatech Global Solar & CCTV Nig. Ltd.</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Poppins', sans-serif; background: #f4f6f8; margin:0; padding:0; }
+header { background: linear-gradient(135deg,#0f5132,#198754); color:#fff; padding:25px; text-align:center;}
+.container { max-width:1100px; margin:30px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.08);}
+h2 {margin-top:0; color:#0f5132;}
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px;}
+label { font-size:14px; font-weight:500;}
+input, select, textarea { width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:14px;}
+textarea {resize:none;}
+.hidden {display:none;}
+.packages { margin-top:20px; padding:20px; background:#f8f9fa; border-radius:8px;}
+.package-card {border:1px solid #ddd; padding:15px; border-radius:8px; margin-bottom:12px; cursor:pointer;}
+.package-card:hover {border-color:#198754; background:#e9f7ef;}
+.summary {margin-top:25px; padding:20px; background:#e9f7ef; border-radius:8px;}
+button { background:#198754; color:#fff; border:none; padding:14px 25px; font-size:16px; border-radius:8px; cursor:pointer; margin-top:20px;}
+footer { text-align:center; padding:15px; font-size:14px; color:#666;}
+</style>
 </head>
 <body>
 
@@ -91,128 +31,55 @@
 </header>
 
 <div class="container">
-  <h2>Customer Registration</h2>
+<h2>Customer Registration</h2>
 
-  <form id="orderForm">
-    <div class="grid">
-      <div>
-        <label>Full Name</label>
-        <input type="text" name="fullName" required />
-      </div>
-
-      <div>
-        <label>Phone Number</label>
-        <input type="tel" name="phoneNumber" required />
-      </div>
-
-      <div>
-        <label>Email Address</label>
-        <input type="email" name="email" />
-      </div>
-
-      <div>
-        <label>Date of Birth</label>
-        <input type="date" name="dob" />
-      </div>
-
-      <div>
-        <label>Nationality</label>
-        <input type="text" name="nationality" />
-      </div>
-
-      <div>
-        <label>State</label>
-        <input type="text" name="state" />
-      </div>
-
-      <div>
-        <label>LGA</label>
-        <input type="text" name="lga" />
-      </div>
-
-      <div>
-        <label>Postal Code</label>
-        <input type="text" name="postalCode" />
-      </div>
-
-      <div>
-        <label>Nearest Bus Stop</label>
-        <input type="text" name="busStop" />
-      </div>
-    </div>
-
-    <label style="margin-top:15px">Full Address</label>
-    <textarea rows="3" name="address"></textarea>
-
-    <label style="margin-top:15px">Type of Installation</label>
-    <select name="installationType" id="installType" onchange="togglePackages()" required>
-      <option value="">Select</option>
-      <option value="solar">Solar Installation</option>
-      <option value="cctv">CCTV Camera Installation</option>
-    </select>
-
-    <div id="solarPackages" class="packages hidden">
-      <h3>Solar Packages</h3>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="1kva_sachet"> 1kVA Satchet – ₦600,000
-      </label>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="1kva_transformer"> 1kVA Transformer – ₦950,000
-      </label>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="2.5kva_hybrid"> 2.5kVA Hybrid – ₦1.6M
-      </label>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="3.5kva_hybrid"> 3.5kVA Hybrid – ₦1.9M
-      </label>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="5kva_hybrid"> 5kVA Hybrid – ₦3.5M
-      </label>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="7.5kva_hybrid"> 7.5kVA Hybrid – ₦5.8M
-      </label>
-
-      <label class="package-card">
-        <input type="radio" name="solarPackage" value="10kva_hybrid"> 10kVA Hybrid – ₦7.8M
-      </label>
-    </div>
-    
-
-   <div class="summary">
-  <h3>Payment Structure</h3>
-  <ul>
-    <li>Total Amount: <span id="totalAmount">-</span></li>
-    <li>Outreach Payment (₦100,000 deduction): <span id="outreachPayment">-</span></li>
-    <li>Adjusted Total: <span id="adjustedTotal">-</span></li>
-    <li>Upfront (40%): <span id="upfrontPayment">-</span></li>
-    <li>Balance (60%): <span id="balance">-</span></li>
-    <li>Weekly Payment (16 weeks): <span id="weeklyPayment">-</span></li>
-  </ul>
+<form id="orderForm">
+<div class="grid">
+  <div><label>Full Name</label><input type="text" name="fullName" required /></div>
+  <div><label>Phone Number</label><input type="tel" name="phoneNumber" required /></div>
+  <div><label>Email Address</label><input type="email" name="email" /></div>
 </div>
 
+<label style="margin-top:15px">Type of Installation</label>
+<select name="installationType" id="installType" onchange="togglePackages()" required>
+  <option value="">Select</option>
+  <option value="solar">Solar Installation</option>
+  <option value="cctv">CCTV Camera Installation</option>
+</select>
 
-
-    <button type="submit">Submit Application</button>
-  </form>
+<div id="solarPackages" class="packages hidden">
+<h3>Solar Packages</h3>
+<label class="package-card"><input type="radio" name="solarPackage" value="1kva_sachet"> 1kVA Satchet – ₦600,000</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="1kva_transformer"> 1kVA Transformer – ₦950,000</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="2.5kva_hybrid"> 2.5kVA Hybrid – ₦1.6M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="3.5kva_hybrid"> 3.5kVA Hybrid – ₦1.9M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="5kva_hybrid"> 5kVA Hybrid – ₦3.5M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="7.5kva_hybrid"> 7.5kVA Hybrid – ₦5.8M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="10kva_hybrid"> 10kVA Hybrid – ₦7.8M</label>
 </div>
 
-<footer>
-  © 2026 Ramatech Global Solar & CCTV Nig. Ltd.
-</footer>
+<div class="summary">
+<h3>Payment Structure</h3>
+<ul>
+  <li>Total Amount: <span id="totalAmount">-</span></li>
+  <li>Outreach Payment (₦100,000 deduction): <span id="outreachPayment">-</span></li>
+  <li>Upfront (40%): <span id="upfrontPayment">-</span></li>
+  <li>Balance (60%): <span id="balance">-</span></li>
+  <li>Weekly Payment (16 weeks): <span id="weeklyPayment">-</span></li>
+</ul>
+</div>
+
+<button type="submit">Submit Application</button>
+</form>
+</div>
+
+<footer>© 2026 Ramatech Global Solar & CCTV Nig. Ltd.</footer>
 
 <script>
 const installType = document.getElementById("installType");
 const solarPackagesDiv = document.getElementById("solarPackages");
-
 const totalAmountEl = document.getElementById("totalAmount");
 const outreachEl = document.getElementById("outreachPayment");
-const adjustedTotalEl = document.getElementById("adjustedTotal");
 const upfrontEl = document.getElementById("upfrontPayment");
 const balanceEl = document.getElementById("balance");
 const weeklyPaymentEl = document.getElementById("weeklyPayment");
@@ -220,7 +87,6 @@ const weeklyPaymentEl = document.getElementById("weeklyPayment");
 const orderForm = document.getElementById("orderForm");
 const submitBtn = orderForm.querySelector("button[type='submit']");
 
-// Solar package prices
 const solarPrices = {
   "1kva_sachet": 600000,
   "1kva_transformer": 950000,
@@ -231,16 +97,13 @@ const solarPrices = {
   "10kva_hybrid": 7800000,
 };
 
-// Outreach deduction
 const OUTREACH_DEDUCTION = 100000;
 
-// Show/hide solar packages
 function togglePackages() {
   solarPackagesDiv.classList.toggle("hidden", installType.value !== "solar");
   updateSummary();
 }
 
-// Update payment summary
 function updateSummary() {
   const formData = new FormData(orderForm);
   const solarPackage = formData.get("solarPackage");
@@ -253,42 +116,34 @@ function updateSummary() {
 
   if (installType.value === "solar" && solarPackage && solarPrices[solarPackage]) {
     total = solarPrices[solarPackage];
-    outreachPrice = total - OUTREACH_DEDUCTION; // final loan price after discount
+    outreachPrice = total - OUTREACH_DEDUCTION;
     upfront = Math.round(outreachPrice * 0.4);
     balance = Math.round(outreachPrice * 0.6);
     weekly = Math.round(balance / 16);
   }
 
-  // Update the DOM
   totalAmountEl.innerText = total ? `₦${total.toLocaleString()}` : "-";
   outreachEl.innerText = outreachPrice ? `₦${outreachPrice.toLocaleString()}` : "-";
-  adjustedTotalEl.innerText = outreachPrice ? `₦${outreachPrice.toLocaleString()}` : "-";
   upfrontEl.innerText = upfront ? `₦${upfront.toLocaleString()}` : "-";
   balanceEl.innerText = balance ? `₦${balance.toLocaleString()}` : "-";
   weeklyPaymentEl.innerText = weekly ? `₦${weekly.toLocaleString()}` : "-";
 }
 
-// Event listeners for package selection
 document.querySelectorAll('input[name="solarPackage"]').forEach(radio => {
   radio.addEventListener("change", updateSummary);
 });
 
-// Generate unique ID
 function generateUniqueId() {
   return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
 }
 
-// Form submission
 orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const formData = new FormData(orderForm);
   const data = Object.fromEntries(formData.entries());
-
   data.id = generateUniqueId();
   data.createdAt = new Date().toISOString();
 
-  // Payment calculation
   const solarPackage = data.solarPackage;
   const total = solarPackage && solarPrices[solarPackage] ? solarPrices[solarPackage] : 0;
   const outreachPrice = total ? total - OUTREACH_DEDUCTION : 0;
@@ -296,20 +151,14 @@ orderForm.addEventListener("submit", async (e) => {
   const balance = Math.round(outreachPrice * 0.6);
   const weekly = Math.round(balance / 16);
 
-  data.payment = {
-    total,
-    outreachPrice,
-    upfront,
-    balance,
-    weekly
-  };
+  data.payment = { total, outreachPrice, upfront, balance, weekly };
+  data.installationSpec = solarPackage || "";
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
   try {
     const res = await fetch("/api/register", {
-
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -331,8 +180,7 @@ orderForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Initialize summary on load
 updateSummary();
 </script>
-
-
+</body>
+</html>
