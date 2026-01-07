@@ -5,10 +5,12 @@ const cors = require("cors");
 const db = require("./db");
 //nst { sendWhatsAppMessage } = require("./whatsapp");//
 
-const app = express();
+const cors = require("cors");
+
 app.use(cors({
-  origin: "*"
+  origin: "https://ramatech-globalsolar.onrender.com"
 }));
+
 app.use(express.json());
 
 // ===== Test Route =====
