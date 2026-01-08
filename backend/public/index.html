@@ -155,10 +155,23 @@ function generateUniqueId() {
 orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(orderForm);
-  const data = Object.fromEntries(formData.entries());
-  data.id = generateUniqueId();
-  data.createdAt = new Date().toISOString();
 
+  // Map form fields to match Supabase columns
+  const data = {
+    fullName: formData.get("fullName") || "",
+    phoneNumber: formData.get("phoneNumber") || "",
+    email: formData.get("email") || "",
+    nationality: formData.get("nationality") || "",
+    state: formData.get("state") || "",
+    lga: formData.get("lga") || "",
+    postalCode: formData.get("postalCode") || "",
+    busStop: formData.get("busStop") || "",
+    address: formData.get("address") || "",
+    installationType: formData.get("installationType") || "",
+    solarPackage: formData.get("solarPackage") || "",
+  };
+
+  // Calculate payments safely
   const solarPackage = data.solarPackage;
   const total = solarPackage && solarPrices[solarPackage] ? solarPrices[solarPackage] : 0;
   const outreachPrice = total ? total - OUTREACH_DEDUCTION : 0;
@@ -166,7 +179,8 @@ orderForm.addEventListener("submit", async (e) => {
   const balance = Math.round(outreachPrice * 0.6);
   const weekly = Math.round(balance / 16);
 
-  data.payment = { total, outreachPrice, upfront, balance, weekly };
+  // Add numeric payments
+  data.payment = { total, upfront, weekly }; // Always numeric
   data.installationSpec = solarPackage || "";
 
   submitBtn.disabled = true;
@@ -197,5 +211,4 @@ orderForm.addEventListener("submit", async (e) => {
 
 updateSummary();
 </script>
-</body>
-</html>
+

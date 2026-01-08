@@ -55,24 +55,25 @@ async function loadData() {
     data.forEach(item => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${item.fullName || "-"}</td>
-        <td>${item.phoneNumber || "-"}</td>
+        <td>${item.name || "-"}</td>
+        <td>${item.phone || "-"}</td>
         <td>${item.email || "-"}</td>
         <td>${item.nationality || "-"}</td>
         <td>${item.state || "-"}</td>
         <td>${item.lga || "-"}</td>
-        <td>${item.postalCode || "-"}</td>
-        <td>${item.address || "-"}${item.busStop ? ' (Near: ' + item.busStop + ')' : ''}</td>
-        <td>${item.installationType || "-"} ${item.installationSpec ? '(' + item.installationSpec + ')' : ''}</td>
-        <td>${item.payment?.total?.toLocaleString() || "-"}</td>
-        <td>${item.payment?.upfront?.toLocaleString() || "-"}</td>
-        <td>${item.payment?.weekly?.toLocaleString() || "-"}</td>
-        <td>${new Date(item.createdAt).toLocaleDateString()}</td>
+        <td>${item.postal_code || "-"}</td>
+        <td>${item.nearest_landmark || "-"}</td>
+        <td>${item.installation_type || "-"}</td>
+        <td>${item.total?.toLocaleString() || "-"}</td>
+        <td>${item.upfront?.toLocaleString() || "-"}</td>
+        <td>${item.weekly?.toLocaleString() || "-"}</td>
+        <td>${new Date(item.date).toLocaleDateString()}</td>
       `;
       tbody.appendChild(tr);
     });
 
   } catch (err) {
+    console.error(err);
     alert("Failed to load registrations");
   }
 }

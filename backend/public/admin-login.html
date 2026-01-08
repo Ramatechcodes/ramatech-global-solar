@@ -16,25 +16,28 @@
 
   <p id="error" style="color:red;"></p>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+ <script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value
-        })
-      });
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-      if (res.ok) {
-        window.location.href = "/admin";
-      } else {
-        document.getElementById("error").innerText = "Invalid login";
-      }
+  try {
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
     });
-  </script>
-</body>
-</html>
+
+    if (res.ok) {
+      window.location.href = "/admin";
+    } else {
+      document.getElementById("error").innerText = "Invalid login";
+    }
+  } catch (err) {
+    document.getElementById("error").innerText = "Network error. Try again.";
+    console.error(err);
+  }
+});
+</script>

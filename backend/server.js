@@ -47,13 +47,10 @@ function requireAdmin(req, res, next) {
 }
 
 /* ===================== AUTH ROUTES ===================== */
-
-// Login page
 app.get("/admin-login", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin-login.html"));
 });
 
-// Handle login
 app.post("/api/admin/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -65,7 +62,6 @@ app.post("/api/admin/login", (req, res) => {
   }
 });
 
-// Logout
 app.get("/admin-logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/admin-login");
@@ -77,24 +73,38 @@ app.get("/admin-logout", (req, res) => {
 // Register customer
 app.post("/api/register", async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from("registrations")
-      .insert([
-        {
-          ...req.body,
-          created_at: new Date().toISOString(), // ensures created_at column is filled
-        },
-      ]);
+    const data = req.body;
+
+    // Map frontend fields to Supabase table columns
+    const newEntry = {
+      name: data.fullName || "",
+      phone: data.phoneNumber || "",
+      email: data.email || "",
+      nationality: data.nationality || "",
+      state: data.state || "",
+      lga: data.lga || "",
+      postal_code: data.postalCode || "",
+      nearest_landmark: data.busStop || "",
+      installation_type: data.installationType || "",
+      total: data.payment?.total || 0,
+      upfront: data.payment?.upfront || 0,
+      weekly: data.payment?.weekly || 0,
+      date: new Date().toISOString(),
+    };
+
+    const { data: insertedData, error } = await supabase
+      .from("registration")
+      .insert([newEntry]);
 
     if (error) throw error;
 
     res.status(201).json({
       message: "Registration saved successfully",
-      data,
+      data: insertedData,
     });
   } catch (err) {
     console.error("Error saving registration:", err);
-    res.status(500).json({ message: "Failed to save registration" });
+    res.status(500).json({ message: "Failed to save registration", error: err.message });
   }
 });
 
@@ -102,16 +112,16 @@ app.post("/api/register", async (req, res) => {
 app.get("/api/registrations", requireAdmin, async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("registrations")
+      .from("registration")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("date", { ascending: false });
 
     if (error) throw error;
 
     res.json(data);
   } catch (err) {
     console.error("Error fetching registrations:", err);
-    res.status(500).json({ message: "Failed to fetch registrations" });
+    res.status(500).json({ message: "Failed to fetch registrations", error: err.message });
   }
 });
 
