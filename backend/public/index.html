@@ -22,7 +22,6 @@ textarea {resize:none;}
 button { background:#198754; color:#fff; border:none; padding:14px 25px; font-size:16px; border-radius:8px; cursor:pointer; margin-top:20px;}
 footer { text-align:center; padding:15px; font-size:14px; color:#666; }
 
-/* Mobile responsiveness */
 @media only screen and (max-width:768px){
   .grid { grid-template-columns:1fr; }
   .package-card { display:block; width:100%; margin-bottom:10px; }
@@ -57,24 +56,24 @@ footer { text-align:center; padding:15px; font-size:14px; color:#666; }
 </div>
 
 <label style="margin-top:15px">Full Address</label>
-<textarea rows="3" name="address"></textarea>
+<textarea rows="3" name="address" placeholder="Enter full address here"></textarea>
 
 <label style="margin-top:15px">Type of Installation</label>
 <select name="installationType" id="installType" onchange="togglePackages()" required>
   <option value="">Select</option>
-  <option value="solar">Solar Installation</option>
-  <option value="cctv">CCTV Camera Installation</option>
+  <option value="Solar Installation">Solar Installation</option>
+  <option value="CCTV Installation">CCTV Camera Installation</option>
 </select>
 
 <div id="solarPackages" class="packages hidden">
 <h3>Solar Packages</h3>
-<label class="package-card"><input type="radio" name="solarPackage" value="1kva_sachet"> 1kVA Satchet – ₦600,000</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="1kva_transformer"> 1kVA Transformer – ₦950,000</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="2.5kva_hybrid"> 2.5kVA Hybrid – ₦1.6M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="3.5kva_hybrid"> 3.5kVA Hybrid – ₦1.9M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="5kva_hybrid"> 5kVA Hybrid – ₦3.5M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="7.5kva_hybrid"> 7.5kVA Hybrid – ₦5.8M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="10kva_hybrid"> 10kVA Hybrid – ₦7.8M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="1kVA Satchet"> 1kVA Satchet – ₦600,000</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="1kVA Transformer"> 1kVA Transformer – ₦950,000</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="2.5kVA Hybrid"> 2.5kVA Hybrid – ₦1.6M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="3.5kVA Hybrid"> 3.5kVA Hybrid – ₦1.9M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="5kVA Hybrid"> 5kVA Hybrid – ₦3.5M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="7.5kVA Hybrid"> 7.5kVA Hybrid – ₦5.8M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="10kVA Hybrid"> 10kVA Hybrid – ₦7.8M</label>
 </div>
 
 <div class="summary">
@@ -107,19 +106,19 @@ const orderForm = document.getElementById("orderForm");
 const submitBtn = orderForm.querySelector("button[type='submit']");
 
 const solarPrices = {
-  "1kva_sachet": 600000,
-  "1kva_transformer": 950000,
-  "2.5kva_hybrid": 1600000,
-  "3.5kva_hybrid": 1900000,
-  "5kva_hybrid": 3500000,
-  "7.5kva_hybrid": 5800000,
-  "10kva_hybrid": 7800000,
+  "1kVA Satchet": 600000,
+  "1kVA Transformer": 950000,
+  "2.5kVA Hybrid": 1600000,
+  "3.5kVA Hybrid": 1900000,
+  "5kVA Hybrid": 3500000,
+  "7.5kVA Hybrid": 5800000,
+  "10kVA Hybrid": 7800000,
 };
 
 const OUTREACH_DEDUCTION = 100000;
 
 function togglePackages() {
-  solarPackagesDiv.classList.toggle("hidden", installType.value !== "solar");
+  solarPackagesDiv.classList.toggle("hidden", installType.value !== "Solar Installation");
   updateSummary();
 }
 
@@ -129,7 +128,7 @@ function updateSummary() {
 
   let total = 0, outreachPrice = 0, upfront = 0, balance = 0, weekly = 0;
 
-  if (installType.value === "solar" && solarPackage && solarPrices[solarPackage]) {
+  if (installType.value === "Solar Installation" && solarPackage && solarPrices[solarPackage]) {
     total = solarPrices[solarPackage];
     outreachPrice = total - OUTREACH_DEDUCTION;
     upfront = Math.round(outreachPrice * 0.4);
@@ -155,23 +154,10 @@ function generateUniqueId() {
 orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(orderForm);
+  const data = Object.fromEntries(formData.entries());
+  data.id = generateUniqueId();
+  data.createdAt = new Date().toISOString();
 
-  // Map form fields to match Supabase columns
-  const data = {
-    fullName: formData.get("fullName") || "",
-    phoneNumber: formData.get("phoneNumber") || "",
-    email: formData.get("email") || "",
-    nationality: formData.get("nationality") || "",
-    state: formData.get("state") || "",
-    lga: formData.get("lga") || "",
-    postalCode: formData.get("postalCode") || "",
-    busStop: formData.get("busStop") || "",
-    address: formData.get("address") || "",
-    installationType: formData.get("installationType") || "",
-    solarPackage: formData.get("solarPackage") || "",
-  };
-
-  // Calculate payments safely
   const solarPackage = data.solarPackage;
   const total = solarPackage && solarPrices[solarPackage] ? solarPrices[solarPackage] : 0;
   const outreachPrice = total ? total - OUTREACH_DEDUCTION : 0;
@@ -179,8 +165,7 @@ orderForm.addEventListener("submit", async (e) => {
   const balance = Math.round(outreachPrice * 0.6);
   const weekly = Math.round(balance / 16);
 
-  // Add numeric payments
-  data.payment = { total, upfront, weekly }; // Always numeric
+  data.payment = { total, outreachPrice, upfront, balance, weekly };
   data.installationSpec = solarPackage || "";
 
   submitBtn.disabled = true;
@@ -211,4 +196,5 @@ orderForm.addEventListener("submit", async (e) => {
 
 updateSummary();
 </script>
-
+</body>
+</html>

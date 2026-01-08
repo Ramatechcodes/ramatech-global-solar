@@ -12,7 +12,6 @@ th, td { padding:10px; border:1px solid #ddd; font-size:14px;}
 th { background:#198754; color:#fff; text-align:left;}
 tr:nth-child(even){ background:#f9f9f9; }
 
-/* Mobile responsiveness */
 @media only screen and (max-width:768px){
   table { display:block; overflow-x:auto; white-space:nowrap; }
   th, td { font-size:13px; }
@@ -62,12 +61,16 @@ async function loadData() {
         <td>${item.state || "-"}</td>
         <td>${item.lga || "-"}</td>
         <td>${item.postal_code || "-"}</td>
-        <td>${item.nearest_landmark || "-"}</td>
+        <td>${item.full_address || "-"}${item.nearest_landmark ? ' (Near: ' + item.nearest_landmark + ')' : ''}</td>
         <td>${item.installation_type || "-"}</td>
         <td>${item.total?.toLocaleString() || "-"}</td>
         <td>${item.upfront?.toLocaleString() || "-"}</td>
         <td>${item.weekly?.toLocaleString() || "-"}</td>
-        <td>${new Date(item.date).toLocaleDateString()}</td>
+        <td>${new Date(item.date).toLocaleString('en-US', { 
+          year:'numeric', month:'numeric', day:'numeric',
+          hour:'numeric', minute:'numeric', second:'numeric',
+          hour12:true 
+        })}</td>
       `;
       tbody.appendChild(tr);
     });
