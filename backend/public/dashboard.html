@@ -1,0 +1,91 @@
+<h2>Customer Dashboard</h2>
+
+<div id="loginBox">
+  <input id="email" placeholder="Enter Email">
+  <input id="password" type="password" placeholder="Password ">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <div class="glass">
+    <p><b>Package:</b> <span id="package"></span></p>
+    <p>Total: ₦<span id="total"></span></p>
+    <p>Balance: ₦<span id="balance"></span></p>
+    <p>Weekly: ₦<span id="weekly"></span></p>
+    <p>Weeks Paid: <span id="weeksCount"></span>/16</p>
+  </div>
+
+  <h3>Payment Progress</h3>
+  <div id="weeks"></div>
+</div>
+<p>Total Amount: ₦<span id="total"></span></p>
+<p>Outreach Payment (₦300,000 deduction): ₦<span id="outreach"></span></p>
+<p>Upfront (60%): ₦<span id="upfront"></span></p>
+<p>Balance (40%): ₦<span id="balance"></span></p>
+<p>Weekly Payment (16 weeks): ₦<span id="weekly"></span></p>
+<script>
+async function login(){
+  const res = await fetch("/api/user/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
+
+  const data = await res.json();
+
+  if(res.ok){
+    localStorage.setItem("token", data.token);
+    loadDashboard();
+  } else {
+    alert(data.message);
+  }
+}
+
+async function loadDashboard(){
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("/api/user/dashboard",{
+    headers:{ Authorization: token }
+  });
+
+  const data = await res.json();
+document.getElementById("outreach").innerText =
+  (data.payment.total - 300000).toLocaleString();
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+
+  document.getElementById("package").innerText = data.registration.installation_type;
+  document.getElementById("total").innerText = data.payment.total.toLocaleString();
+  document.getElementById("balance").innerText = data.payment.balance.toLocaleString();
+  document.getElementById("weekly").innerText = data.payment.weekly.toLocaleString();
+  document.getElementById("weeksCount").innerText = data.payment.weeks_paid;
+  document.getElementById("total").innerText = data.payment.total.toLocaleString();
+
+document.getElementById("upfront").innerText =
+  (data.payment.total * 0.5).toLocaleString();
+
+document.getElementById("balance").innerText =
+  data.payment.balance.toLocaleString();
+
+document.getElementById("weekly").innerText =
+  data.payment.weekly.toLocaleString();
+
+  renderWeeks(data.payment.weeks_paid);
+}
+
+function renderWeeks(weeksPaid){
+  let html = "";
+
+  for(let i=1;i<=16;i++){
+    html += `
+      <input type="checkbox" ${i <= weeksPaid ? "checked" : ""} disabled>
+      Week ${i}<br>
+    `;
+  }
+
+  document.getElementById("weeks").innerHTML = html;
+}
+</script>
