@@ -16,8 +16,147 @@ input, select, textarea { width:100%; padding:10px; border:1px solid #ccc; borde
 textarea {resize:none;}
 .hidden {display:none;}
 .packages { margin-top:20px; padding:20px; background:#f8f9fa; border-radius:8px;}
-.package-card {border:1px solid #ddd; padding:15px; border-radius:8px; margin-bottom:12px; cursor:pointer;}
-.package-card:hover {border-color:#198754; background:#e9f7ef;}
+.package-card { padding:15px; border-radius:8px; margin-bottom:12px; cursor:pointer;}
+.hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero-video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(1.2) contrast(1.1);
+}
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* SMOOTH SCROLL */
+html {
+  scroll-behavior: smooth;
+}
+
+/* BUTTON */
+button {
+  background: linear-gradient(135deg,#198754,#20c997);
+  border: none;
+  padding: 14px 25px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+/* MOBILE FIRST */
+@media(max-width:768px){
+  .grid { grid-template-columns:1fr; }
+}
+.hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+}
+
+.hero-overlay h1 {
+  font-size: 50px;
+}
+.animate {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.6s ease;
+}
+.slider {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.2),
+    rgba(0,0,0,0.4)
+  );
+}
+.slide {
+  min-width: 100%;
+  transition: 0.5s;
+  text-align: center;
+}
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  animation: fadeUp 1.5s ease;
+}
+.company {
+  font-size: 18px;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+.hero-content h1 {
+  font-size: 60px;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+.animate.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hero-overlay p {
+  font-size: 20px;
+  margin: 10px 0;
+}
+section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: inline;
+}
+.hero-overlay button {
+  background: #198754;
+  border: none;
+  padding: 15px 30px;
+  color: white;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 .summary {margin-top:25px; padding:20px; background:#e9f7ef; border-radius:8px;}
 button { background:#198754; color:#fff; border:none; padding:14px 25px; font-size:16px; border-radius:8px; cursor:pointer; margin-top:20px;}
 footer { text-align:center; padding:15px; font-size:14px; color:#666; }
@@ -31,15 +170,186 @@ footer { text-align:center; padding:15px; font-size:14px; color:#666; }
   .summary ul li { font-size:13px; }
   button { width:100%; padding:12px; font-size:14px; }
 }
+.container {
+  margin: 20px;
+  border-radius: 20px;
+}
+
+input, select, textarea {
+  border-radius: 10px;
+  padding: 12px;
+}
+
+/* TOUCH FEEL */
+.package-card {
+  transition: 0.3s;
+}
+
+.package-card:active {
+  transform: scale(0.97);
+}
+.package-card:hover {
+  box-shadow: 0 10px 30px rgba(0,255,150,0.2);
+}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Ramatech Global Solar & CCTV Nig. Ltd.</h1>
-  <p>Install Now • Pay 40% • Balance Weekly</p>
-</header>
+<section class="hero">
+  <video autoplay muted loop class="hero-video">
+    <source src="solar-video.mp4" type="video/mp4">
+  </video>
 
+  <div class="overlay"></div>
+
+  <div class="hero-content">
+    <h3 class="company">Ramatech Global Solar Nig Ltd</h3>
+    <h1>Smart Solar. Easy Payment.</h1>
+    <p>Install Today • Pay Flexibly • Live Better</p>
+    <button onclick="scrollToForm()">Get Started</button>
+  </div>
+</section>
+<section style="padding:40px; background:#0f172a; color:white;">
+  <h2 style="text-align:center;">How It Works</h2>
+
+  <div class="grid">
+    <div>
+      <h3>01 Choose Package</h3>
+      <p>Select your solar or CCTV plan</p>
+    </div>
+
+    <div>
+      <h3>02 Pay Outreach Fee</h3>
+      <p>Secure your installation slot</p>
+    </div>
+
+    <div>
+      <h3>03 Installation</h3>
+      <p>We install at your location</p>
+    </div>
+
+    <div>
+      <h3>04 Pay Balance Weekly</h3>
+      <p>Spread payment across 16 weeks</p>
+    </div>
+  </div>
+</section>
+<section style="padding:40px; background:#f4f6f8;">
+  <h2 style="text-align:center;">Why Choose Ramatech Global Solar?</h2>
+
+  <div class="grid" style="margin-top:20px;">
+    
+    <div style="background:#fff; padding:20px; border-radius:10px;">
+      <h3>Affordable</h3>
+      <p>Flexible solar plans with low upfront cost and easy weekly payment structure.</p>
+    </div>
+
+    <div style="background:#fff; padding:20px; border-radius:10px;">
+      <h3>Fast</h3>
+      <p>Installation and approval completed within 24–72 hours.</p>
+    </div>
+
+    <div style="background:#fff; padding:20px; border-radius:10px;">
+      <h3>Transparent</h3>
+      <p>No hidden charges. Everything is clearly explained before installation.</p>
+    </div>
+
+    <div style="background:#fff; padding:20px; border-radius:10px;">
+      <h3>Flexible</h3>
+      <p>Pay 60% on delivery and spread the remaining balance weekly.</p>
+    </div>
+
+  </div>
+</section>
+<section style="padding:50px; background:#0f172a; color:white; text-align:center;">
+  <h2>Our Achievements</h2>
+  <p>Reliable energy solutions powering homes and businesses across Nigeria.</p>
+<h1 class="counter" data-target="5000">0</h1>
+  <div class="grid" style="margin-top:30px;">
+    <div>
+      <h1>5,000+</h1>
+      <p>Customers</p>
+    </div>
+
+    <div>
+      <h1>₦500M+</h1>
+      <p>Installations Delivered</p>
+    </div>
+
+    <div>
+      <h1>2000+</h1>
+      <p>Solar Systems Installed</p>
+    </div>
+
+    <div>
+      <h1>10,000+</h1>
+      <p>Lives Powered</p>
+    </div>
+  </div>
+</section>
+<section style="padding:40px; background:#fff;">
+  <h2 style="text-align:center;">Our Stories</h2>
+
+  <div class="grid" style="margin-top:20px;">
+    
+    <div>
+      <img src="rama3.jpg" style="width:100%; border-radius:10px;">
+      <h4>blackout-24/7 electricity</h4>
+      <p>A family in Lagos now enjoys 24/7 electricity with our 3.5kVA system.</p>
+    </div>
+
+    <div>
+      <img src="rama1.jpg" style="width:100%; border-radius:10px;">
+      <h4>Business Growth</h4>
+      <p>A shop owner increased sales after installing reliable solar power.</p>
+    </div>
+
+    <div>
+      <img src="rama10.jpg" style="width:100%; border-radius:10px;">
+      <h4>Security Upgrade</h4>
+      <p>A home secured with our CCTV installation package.</p>
+    </div>
+
+    <div>
+      <img src="rama4.jpg" style="width:100%; border-radius:10px;">
+      <h4>Affordable Power</h4>
+      <p>Customer enjoys flexible payment without financial stress.</p>
+    </div>
+
+  </div> <br><br><br>
+</section>
+<section style="padding:10px; margin: 10px; background:#111; color:white; text-align:center;">
+  <h2>Global Trust</h2>
+  <p>Trusted by customers across Nigeria and beyond</p>
+
+  <h1 style="margin-top:20px;">5+</h1>
+  <p>States Covered</p>
+
+  <div style="margin-top:20px;">
+    <p>Nigeria • Lagos • Ogun • Abuja • Oyo • Port Harcourt</p>
+  </div>
+</section>
+<section style="padding:40px; text-align:center;">
+  <h2>Loved & Supported By Top Brands</h2>
+
+  <div class="grid" style="margin-top:20px;">
+    <div>🔋 Luminous</div>
+    <div>⚡ Sukam</div>
+    <div>🔆 Felicity Solar</div>
+    <div>📡 Hikvision</div>
+    <div>📷 Dahua</div>
+  </div>
+</section>
+
+
+
+<section style="padding:30px; background:#f8f9fa;">
+  <h2>Our Mission</h2>
+  <p>To provide affordable and reliable energy solutions to every home.</p>
+
+  <h2>Our Vision</h2>
+  <p>To become Nigeria’s leading solar and security installation company.</p>
+</section>
 <div class="container">
 <h2>Customer Registration</h2>
 
@@ -67,22 +377,256 @@ footer { text-align:center; padding:15px; font-size:14px; color:#666; }
 
 <div id="solarPackages" class="packages hidden">
 <h3>Solar Packages</h3>
-<label class="package-card"><input type="radio" name="solarPackage" value="1kVA Satchet"> 1kVA Satchet – ₦600,000</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="1kVA Transformer"> 1kVA Transformer – ₦950,000</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="2.5kVA Hybrid"> 2.5kVA Hybrid – ₦1.6M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="3.5kVA Hybrid"> 3.5kVA Hybrid – ₦1.9M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="5kVA Hybrid"> 5kVA Hybrid – ₦3.5M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="7.5kVA Hybrid"> 7.5kVA Hybrid – ₦5.8M</label>
-<label class="package-card"><input type="radio" name="solarPackage" value="10kVA Hybrid"> 10kVA Hybrid – ₦7.8M</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="1kVA Satchet">
+  <strong>1kVA Satchet</strong><br>
+
+<small>
+Installment Price: ₦700,000 <br>
+Outright Price: ₦400,000 <br><br>
+</small>
+
+<small>
+  <h1>Components:</h1>
+✔ 100Ah Battery<br>
+✔ 2 pieces of 200watt Panels<br>
+<br>
+✔ Charge controller <br>
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices
+<h1>Can Power:</h1>
+
+✔ 4–6 LED bulbs <br>
+✔ 1 fan <br>
+✔ TV <br>
+✔ Decoder <br>
+✔ Phone/laptop charging 
+</small>
+
+</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="1kVA Transformer base">
+  <strong>1kVA Transformer base</strong><br>
+
+<small>
+Installment Price: ₦1,300,000 <br>
+Outright Price: ₦1,000,000 <br><br>
+</small>
+<small>
+  <h1>Components:</h1>
+✔ 220Ah tubular Battery<br>
+✔ 4 pieces of 200watt Panels<br>
+<br>
+✔ Charge controller <br>
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices
+<h1>Can Power:</h1>
+
+✔ 6–10 LED bulbs <br>
+✔ 2 fans <br>
+✔ TV <br>
+✔ Decoder <br>
+✔ Phone/laptop charging 
+✔ sound system <br>
+mini fridge during the day
+</small>
+
+</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="2.5kVA Installation">
+ <strong>2.5kVA Installation</strong><br>
+
+<small>
+Installment Price: ₦1,800,000 <br>
+Outright Price: ₦1,500,000 <br><br>
+</small>
+
+<small>
+  <h1>Components:</h1>
+✔ 2.5kVA hybrid inverter <br>
+✔ 2 × 220Ah batteries <br>
+✔ 6 pieces of 250watt mono panels<br>
+<br>    
+
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices
+<h1>Can Power:</h1>
+
+✔ Full lighting
+
+✔ Fans <br>
+
+✔  TV <br>
+✔ Fridge <br>
+✔ Laptop <br>
+✔ Router <br>
+✔ Decoder <br>
+✔ Phone/laptop charging <br>
+✔ washing machine
+✔ Sound system 
+</small>
+
+</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="3.5kVA Installation">
+  <strong>3.5kVA Installation</strong><br>
+
+<small>
+Installment Price: ₦2,100,000 <br>
+Outright Price: ₦1,800,000 <br><br>
+</small>
+<small>
+  <h1>Components:</h1>
+✔ 3.5kVA hybrid inverter <br>
+✔ 2 × 220Ah batteries <br>
+✔ 8 pieces of 250watt mono panels<br>
+<br>    
+ <br>
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices
+<h1>Can Power:</h1>
+
+✔ Full lighting
+
+✔ Fans <br>
+
+✔  TV <br>
+✔ Fridge <br>
+✔ Laptop <br>
+✔ Router <br>
+✔ Decoder <br>
+✔ Phone/laptop charging <br>
+✔ washing machine
+✔ Sound system 
+✔ pumping water during the day(1hp pumping machine)
+</small>
+
+</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="5kVA Installation">
+ <strong>5kVA Installation</strong><br>
+
+<small>
+Installment Price: ₦3,500,000 <br>
+Outright Price: ₦3,200,000 <br><br>
+</small>
+<small>
+  <h1>Components:</h1>
+✔ 5kVA hybrid inverter <br>
+✔ 4 × 220Ah batteries <br>
+✔ 12 pieces of 250watt mono panels<br>
+<br>    
+ <br>
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices <br>
+✔ battery rack
+<h1>Can Power:</h1>
+
+✔ Full lighting
+
+✔ Fans <br>
+
+✔  TVs <br>
+✔ freezers or Fridge <br>
+✔ Laptop <br>
+✔ Router <br>
+✔ Decoder <br>
+✔ Phone/laptop charging <br>
+✔ 2 1hp Air conditioner during the day and
+1hp Air conditioner at night
+✔ blender
+✔ wahing machine
+✔ Sound system 
+✔ pumping water during the day(1hp pumping machine)
+</small>
+
+
+
+</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="7.5kVA Installation">
+  <strong>7.5kVA Installation</strong><br>
+
+<small>
+Installment Price: ₦5,800,000 <br>
+Outright Price: ₦5,500,000 <br><br>
+</small>
+<small>
+  <h1>Components:</h1>
+  ✔ 7.5kVA hybrid inverter <br>
+✔ 8 x 220Ah Battery<br>
+✔ 24 pieces of 250watt Panels<br>
+<br>
+
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices <br>
+✔ battery rack
+<h1>Can Power:</h1>
+
+✔ Full lighting
+
+✔ Fans <br>
+
+✔  TVs <br>
+✔ freezers or Fridge <br>
+✔ Laptop <br>
+✔ Router <br>
+✔ Decoder <br>
+✔ Phone/laptop charging <br>
+✔ 2 x 1hp Air conditioner during the day and night
+✔ blender
+✔ wahing machine
+✔ Sound system 
+✔ pumping water during the day(2hp pumping machine)
+</small>
+</label>
+<label class="package-card"><input type="radio" name="solarPackage" value="10kVA Installation">
+ <strong>10kVA Installation</strong><br>
+
+<small>
+Installment Price: ₦7,800,000 <br>
+Outright Price: ₦7,500,000 <br><br>
+</small>
+<small>
+  <h1>Components:</h1>
+  ✔ 10kVA hybrid inverter <br>
+✔ 8 x 220Ah /20kwh lithium  Battery<br>
+✔ 32 pieces of 200watt Panels<br>
+<br>
+✔ DC cables + AC wiring <br>
+✔ Mounting structure <br>
+✔ breakers & protective devices <br>
+✔ battery rack
+<h1>Can Power:</h1>
+
+✔ Full lighting
+
+✔ Fans <br>
+
+✔  TVs <br>
+✔ freezers or Fridge <br>
+✔ Laptop <br>
+✔ Router <br>
+✔ Decoder <br>
+✔ Phone/laptop charging <br>
+✔ 2 x 1hp Air conditioner during the day and night
+✔ blender
+✔ wahing machine
+✔ Sound system 
+✔ pumping water during the day(2hp pumping machine)
+✔ microwave oven
+✔ water heater
+</small>
+</label>
 </div>
 
 <div class="summary">
 <h3>Payment Structure</h3>
 <ul>
   <li>Total Amount: <span id="totalAmount">-</span></li>
-  <li>Outreach Payment (₦100,000 deduction): <span id="outreachPayment">-</span></li>
-  <li>Upfront (40%): <span id="upfrontPayment">-</span></li>
-  <li>Balance (60%): <span id="balance">-</span></li>
+  <li>Outreach Payment (₦300,000 deduction): <span id="outreachPayment">-</span></li>
+  <li>Upfront (60% - Pay on Delivery): <span id="upfrontPayment">-</span></li>
+  <li>Balance (40%): <span id="balance">-</span></li>
   <li>Weekly Payment (16 weeks): <span id="weeklyPayment">-</span></li>
 </ul>
 </div>
@@ -90,8 +634,77 @@ footer { text-align:center; padding:15px; font-size:14px; color:#666; }
 <button type="submit">Submit Application</button>
 </form>
 </div>
+<div class="slider">
+  <div class="slide active">
+    <h3>1kVA Satchet</h3>
+    <p>₦700,000</p>
+    <small>Outright: ₦400,000</small>
+  </div>
+<div class="slide">
+    <h3>1kVA Transformer base</h3>
+    <p>₦1,300,000</p>
+    <small>Outright: ₦1,000,000</small>
+  </div>
+  <div class="slide">
+    <h3>2.5kVA</h3>
+    <p>₦1,800,000</p>
+    <small>Outright: ₦1,500,000</small>
+  </div>
+<div class="slide">
+    <h3>3.5kVA</h3>
+    <p>₦2,100,000</p>
+    <small>Outright: ₦1,800,000</small>
+  </div>
+  <div class="slide">
+    <h3>5kVA</h3>
+    <p>₦3,500,000</p>
+    <small>Outright: ₦3,200,000</small>
+  </div>
+  <div class="slide">
+    <h3>7.5kVA</h3>
+    <p>₦5,800,000</p>
+    <small>Outright: ₦5,500,000</small>
+  </div>
+  <div class="slide">
+    <h3>10kVA</h3>
+    <p>₦7,800,000</p>
+    <small>Outright: ₦7,500,000</small>
+  </div>
+</div>
 
-<footer>© 2026 Ramatech Global Solar & CCTV Nig. Ltd.</footer>
+<div class="slider-controls">
+  <button onclick="prevSlide()">◀</button>
+  <button onclick="nextSlide()">▶</button>
+</div>
+<footer style="background:#0f172a; color:white; padding:40px;">
+  <div class="grid">
+
+    <div>
+      <h3>Products</h3>
+      <p>Solar Installation</p>
+      <p>CCTV Installation</p>
+      <p>Maintenance</p>
+    </div>
+
+    <div>
+      <h3>Company</h3>
+      <p>About Us</p>
+      <p>Contact Us</p>
+      <p>Careers</p>
+    </div>
+
+    <div>
+      <h3>Contact</h3>
+      <p>Phone: +234 9034689656</p>
+      <p>Email: ramatechcode14@gmail.com</p>
+    </div>
+
+  </div>
+
+  <p style="text-align:center; margin-top:20px;">
+    © 2026 Ramatech Global Solar & CCTV Nig. Ltd. All rights reserved.
+  </p>
+</footer>
 
 <script>
 const installType = document.getElementById("installType");
@@ -106,36 +719,66 @@ const orderForm = document.getElementById("orderForm");
 const submitBtn = orderForm.querySelector("button[type='submit']");
 
 const solarPrices = {
-  "1kVA Satchet": 600000,
-  "1kVA Transformer": 950000,
-  "2.5kVA Hybrid": 1600000,
-  "3.5kVA Hybrid": 1900000,
-  "5kVA Hybrid": 3500000,
-  "7.5kVA Hybrid": 5800000,
-  "10kVA Hybrid": 7800000,
+  "1kVA Satchet": 700000,
+  "1kVA Transformer base": 1300000,
+  "2.5kVA Installation": 1800000,
+  "3.5kVA Installation": 2100000,
+  "5kVA Installation": 3500000,
+  "7.5kVA Installation": 5800000,
+  "10kVA Installation": 7800000,
 };
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+});
+document.querySelectorAll(".counter").forEach(counter=>{
+  let update = ()=>{
+    let target = +counter.getAttribute("data-target");
+    let count = +counter.innerText;
 
-const OUTREACH_DEDUCTION = 100000;
+    let inc = target / 100;
+
+    if(count < target){
+      counter.innerText = Math.ceil(count + inc);
+      setTimeout(update,20);
+    } else {
+      counter.innerText = target;
+    }
+  };
+  update();
+});
+document.querySelectorAll(".animate").forEach(el=>{
+  observer.observe(el);
+});
+const OUTREACH_DEDUCTION = 300000;
 
 function togglePackages() {
   solarPackagesDiv.classList.toggle("hidden", installType.value !== "Solar Installation");
   updateSummary();
 }
-
+function scrollToForm() {
+  document.querySelector(".container").scrollIntoView({ behavior: "smooth" });
+}
 function updateSummary() {
   const formData = new FormData(orderForm);
   const solarPackage = formData.get("solarPackage");
 
   let total = 0, outreachPrice = 0, upfront = 0, balance = 0, weekly = 0;
 
-  if (installType.value === "Solar Installation" && solarPackage && solarPrices[solarPackage]) {
-    total = solarPrices[solarPackage];
-    outreachPrice = total - OUTREACH_DEDUCTION;
-    upfront = Math.round(outreachPrice * 0.4);
-    balance = Math.round(outreachPrice * 0.6);
-    weekly = Math.round(balance / 16);
-  }
+ if (installType.value === "Solar Installation" && solarPackage && solarPrices[solarPackage]) {
+  total = solarPrices[solarPackage];
 
+  // ✅ OUTRIGHT (display only)
+  outreachPrice = total - OUTREACH_DEDUCTION;
+
+  // ✅ INSTALLMENT (REAL CALCULATION FROM TOTAL)
+  upfront = Math.round(total * 0.6);
+  balance = Math.round(total * 0.4);
+  weekly = Math.round(balance / 16);
+}
   totalAmountEl.innerText = total ? `₦${total.toLocaleString()}` : "-";
   outreachEl.innerText = outreachPrice ? `₦${outreachPrice.toLocaleString()}` : "-";
   upfrontEl.innerText = upfront ? `₦${upfront.toLocaleString()}` : "-";
@@ -150,7 +793,53 @@ document.querySelectorAll('input[name="solarPackage"]').forEach(radio => {
 function generateUniqueId() {
   return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
 }
+let index = 0;
+const slides = document.querySelectorAll(".slide");
 
+function showSlide(i){
+  slides.forEach((s,idx)=>{
+    s.style.transform = `translateX(-${i*100}%)`;
+  });
+}
+
+function nextSlide(){
+  index = (index + 1) % slides.length;
+  showSlide(index);
+}
+async function login(){
+  const res = await fetch("/api/user/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
+
+  const data = await res.json();
+
+  if(res.ok){
+    localStorage.setItem("token", data.token);
+    window.location.href = "/dashboard.html";
+  } else {
+    alert(data.message);
+  }
+}
+async function pay(){
+  const token = localStorage.getItem("token");
+
+  await fetch("/api/user/pay",{
+    method:"POST",
+    headers:{ Authorization: token }
+  });
+
+  alert("Payment successful");
+  loadDashboard();
+}
+function prevSlide(){
+  index = (index - 1 + slides.length) % slides.length;
+  showSlide(index);
+}
 orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(orderForm);
@@ -161,9 +850,10 @@ orderForm.addEventListener("submit", async (e) => {
   const solarPackage = data.solarPackage;
   const total = solarPackage && solarPrices[solarPackage] ? solarPrices[solarPackage] : 0;
   const outreachPrice = total ? total - OUTREACH_DEDUCTION : 0;
-  const upfront = Math.round(outreachPrice * 0.4);
-  const balance = Math.round(outreachPrice * 0.6);
-  const weekly = Math.round(balance / 16);
+ // ✅ CORRECT
+const upfront = Math.round(total * 0.6);
+const balance = Math.round(total * 0.4);
+const weekly = Math.round(balance / 16);
 
   data.payment = { total, outreachPrice, upfront, balance, weekly };
   data.installationSpec = solarPackage || "";
