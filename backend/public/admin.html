@@ -1,87 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - Ramatech</title>
-<style>
-body { font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; }
-h1 { color:#198754; margin-bottom:20px;}
-table { width:100%; border-collapse:collapse; background:#fff;}
-th, td { padding:10px; border:1px solid #ddd; font-size:14px;}
-th { background:#198754; color:#fff; text-align:left;}
-tr:nth-child(even){ background:#f9f9f9; }
+<title>Admin Panel</title>
 
-@media only screen and (max-width:768px){
-  table { display:block; overflow-x:auto; white-space:nowrap; }
-  th, td { font-size:13px; }
-}
+<style>
+body { font-family: Arial; background:#f4f6f8; padding:20px; }
+#dashboard { display:none; }
+table { width:100%; border-collapse:collapse; background:#fff; }
+th, td { padding:10px; border:1px solid #ddd; }
+th { background:#198754; color:#fff; }
+button { padding:5px 10px; cursor:pointer; }
 </style>
 </head>
+
 <body>
 
-<h1>📋 Registered Customers</h1>
+<!-- LOGIN -->
+<div id="loginBox">
+  <h2>Admin Login</h2>
+  <input id="adminPass" type="password" placeholder="Enter Admin Code ">
+  <button onclick="login()">Login</button>
+  <p id="error" style="color:red;"></p>
+</div>
 
-<table id="dataTable">
-  <thead>
-    <tr>
-      <th>Full Name</th>
-      <th>Phone</th>
-      <th>Email</th>
-      <th>Nationality</th>
-      <th>State</th>
-      <th>LGA</th>
-      <th>Postal Code</th>
-      <th>Address / Landmark</th>
-      <th>Installation</th>
-      <th>Total (₦)</th>
-      <th>Upfront (₦)</th>
-      <th>Weekly (₦)</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <h1>📋 Customers</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Package</th>
+        <th>Total</th>
+        <th>Balance</th>
+        <th>Weekly</th>
+        <th>Weeks Paid</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
 
 <script>
-async function loadData() {
-  try {
-    const res = await fetch("/api/registrations");
-    const data = await res.json();
-    const tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML = "";
+async function login(){
+  const password = document.getElementById("adminPass").value;
 
-    data.forEach(item => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${item.name || "-"}</td>
-        <td>${item.phone || "-"}</td>
-        <td>${item.email || "-"}</td>
-        <td>${item.nationality || "-"}</td>
-        <td>${item.state || "-"}</td>
-        <td>${item.lga || "-"}</td>
-        <td>${item.postal_code || "-"}</td>
-        <td>${item.full_address || "-"}${item.nearest_landmark ? ' (Near: ' + item.nearest_landmark + ')' : ''}</td>
-        <td>${item.installation_type || "-"}</td>
-        <td>${item.total?.toLocaleString() || "-"}</td>
-        <td>${item.upfront?.toLocaleString() || "-"}</td>
-        <td>${item.weekly?.toLocaleString() || "-"}</td>
-        <td>${new Date(item.date).toLocaleString('en-US', { 
-          year:'numeric', month:'numeric', day:'numeric',
-          hour:'numeric', minute:'numeric', second:'numeric',
-          hour12:true 
-        })}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+  const res = await fetch("/api/admin/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ password }),
+    credentials:"include"
+  });
 
-  } catch (err) {
-    console.error(err);
-    alert("Failed to load registrations");
+  if(res.ok){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    loadData();
+  }else{
+    document.getElementById("error").innerText = "Wrong code";
   }
 }
 
-loadData();
+async function loadData(){
+  const res = await fetch("/api/registrations",{
+    credentials:"include"
+  });
+
+  const data = await res.json();
+  const tbody = document.getElementById("tbody");
+
+  tbody.innerHTML = "";
+
+  for(const item of data){
+
+    const resUser = await fetch("/api/users/by-email?email="+item.email);
+    const user = await resUser.json();
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.email}</td>
+      <td>${item.installation_type}</td>
+      <td>₦${item.total}</td>
+      <td>₦${item.balance?.toLocaleString()}</td>
+      <td>₦${item.weekly}</td>
+      <td>${user.weeks_paid}</td>
+      <td>
+        <button onclick="mark('${user.id}')">Mark Paid</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  }
+}
+
+async function mark(userId){
+  await fetch("/api/admin/pay-week",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ user_id: userId })
+  });
+
+  alert("✅ Updated");
+  loadData();
+}
 </script>
 
 </body>
