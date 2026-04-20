@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 /* ===================== ADMIN CREDENTIALS ===================== */
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-const ADMIN_PASSWORD = "1234";
+const ADMIN_PASSWORD = "Ramadan@14";
 
 /* ===================== MIDDLEWARE ===================== */
 app.use(cors());
@@ -50,7 +50,7 @@ app.get("/admin-login", (req, res) => {
 app.post("/api/admin/login", (req, res) => {
   const { password } = req.body;
 
-  if (password === "1234") {
+  if (password === "Ramadan@14") {
     req.session.isAdmin = true;
     res.json({ success: true });
   } else {
@@ -121,8 +121,8 @@ outreach_fee: 300000, // display only
 
     if (regError) throw regError;
 
-    // ✅ 2. Create user (password = 1234)
-    const hashed = await bcrypt.hash("1234", 10);
+    // ✅ 2. Create user (password = Ramadan@14)
+    const hashed = await bcrypt.hash("Ramadan@14", 10);
 
     const { data: user, error: userError } = await supabase
       .from("users")
